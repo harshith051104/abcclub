@@ -14,28 +14,25 @@ export default function Home() {
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-900/20 to-black/50" />
           <img
-            src="src\pages\frequency-wave-7776034.jpg"
+            src="src/pages/frequency-wave-7776034.jpg"
             alt="AI Background"
             className="w-full h-full object-cover"
           />
         </div>
         <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8">
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
+          {/* Add image above the heading */}
+          <motion.img
+            src="src/pages/g10328.png"
+            alt="ABC Club Logo"
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-amber-400 to-amber-300 bg-clip-text text-transparent"
-          >
-            ABC Club
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-xl md:text-2xl text-gray-300 mb-4"
-          >
-            AnyBody Can Code Club
-          </motion.p>
+            className="mx-auto mb-4"
+            style={{ width: '550px', height: '550px' }}
+          />
+          
+        
+
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

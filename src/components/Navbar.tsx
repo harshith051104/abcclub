@@ -18,64 +18,60 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="fixed w-full z-50 bg-black/50 backdrop-blur-lg border-b border-amber-900/50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center space-x-2">
-            <img
-              src="src\components\g10328.png" // Add your logo file
-              className="h-8 w-auto"
-            />
-            <span className="text-xl font-bold bg-gradient-to-r from-amber-500 to-amber-300 bg-clip-text text-transparent">
-              ABC Club
-            </span>
-          </Link>
-
-          <div className="hidden md:flex items-center space-x-8">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`${
-                  location.pathname === item.href
-                    ? 'text-amber-400'
-                    : 'text-gray-300 hover:text-amber-400'
-                } transition-colors duration-200`}
+    <nav className="fixed w-full z-50">
+      <div className="bg-transparent">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 relative">
+            {/* Center the logo */}
+            <div className="absolute left-1/2 transform -translate-x-1/2">
+              <Link 
+                to="/" 
+                className="flex items-center space-x-2"
+                onClick={() => setIsOpen(false)}
               >
-                {item.name}
-              </Link>
-            ))}
-            <Link
-              to="/login"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200"
-            >
-              {isEditor ? 'Dashboard' : 'Login'}
-            </Link>
-          </div>
+                <span className="text-4xl font-bold text-amber-400"
+                      style={{ fontFamily: "'DM Serif Display', serif" }}>ABC Club
+                </span>
 
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="text-gray-300 hover:text-white"
-            >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+              </Link>
+            </div>
+            
+            {/* Right-aligned menu button */}
+            <div className="ml-auto">
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="text-amber-400 hover:text-amber-300 p-2 transition-transform duration-300"
+              >
+                {isOpen ? <X size={24} className="rotate-90" /> : <Menu size={24} />}
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {isOpen && (
-        <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 bg-black/90 backdrop-blur-lg">
-            {navigation.map((item) => (
+      {/* Animated dropdown menu */}
+      <div 
+        className={`w-full bg-transparent transform transition-all duration-500 ease-in-out ${
+          isOpen 
+            ? 'opacity-100 translate-y-0' 
+            : 'opacity-0 -translate-y-full pointer-events-none'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex flex-wrap justify-center items-center gap-6">
+            {navigation.map((item, index) => (
               <Link
                 key={item.name}
                 to={item.href}
-                className={`${
+                className={`text-center py-2 px-4 text-lg font-medium transform transition-all duration-500 ${
                   location.pathname === item.href
                     ? 'text-amber-400'
-                    : 'text-gray-300'
-                } block px-3 py-2 text-base font-medium`}
+                    : 'text-amber-300 hover:text-amber-400'
+                } ${isOpen 
+                    ? 'translate-y-0 opacity-100' 
+                    : 'translate-y-4 opacity-0'
+                  }`}
+                style={{ transitionDelay: `${index * 50}ms` }}
                 onClick={() => setIsOpen(false)}
               >
                 {item.name}
@@ -83,14 +79,19 @@ export default function Navbar() {
             ))}
             <Link
               to="/login"
-              className="block px-3 py-2 text-base font-medium text-amber-400"
+              className={`text-center py-2 px-6 text-lg font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all duration-300 transform ${
+                isOpen 
+                  ? 'translate-y-0 opacity-100' 
+                  : 'translate-y-4 opacity-0'
+              }`}
+              style={{ transitionDelay: `${navigation.length * 50}ms` }}
               onClick={() => setIsOpen(false)}
             >
               {isEditor ? 'Dashboard' : 'Login'}
             </Link>
           </div>
         </div>
-      )}
+      </div>
     </nav>
   );
 }
