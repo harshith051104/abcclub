@@ -5,8 +5,20 @@ import { useAuth } from '../context/AuthContext';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
+  const [scrolled, setScrolled] = React.useState(false);
   const location = useLocation();
   const { isEditor } = useAuth();
+
+  // Handle scroll events
+  React.useEffect(() => {
+    const handleScroll = () => {
+      const offset = window.scrollY;
+      setScrolled(offset > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const navigation = [
     { name: 'Home', href: '/' },
@@ -18,47 +30,54 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="fixed w-full z-50">
-      <div className="bg-transparent">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 relative">
-            {/* Center the logo */}
-            <div className="absolute left-1/2 transform -translate-x-1/2">
-              <Link 
-                to="/" 
-                className="flex items-center space-x-2"
-                onClick={() => setIsOpen(false)}
+    <nav className={`fixed w-full z-50 transition-all duration-300 ${
+      scrolled ? 'bg-black/90 backdrop-blur-sm' : 'bg-transparent'
+    }`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <div className="flex-1 flex justify-center">
+            <Link 
+              to="/" 
+              className="flex items-center space-x-2"
+              onClick={() => setIsOpen(false)}
+            >
+              <span 
+                className={`text-4xl font-bold transition-all duration-300 ${
+                  scrolled ? 'text-amber-500' : 'text-amber-400'
+                }`}
+                style={{ fontFamily: "'DM Serif Display', serif" }}
               >
-                <span className="text-4xl font-bold text-amber-400"
-                      style={{ fontFamily: "'DM Serif Display', serif" }}>ABC Club
-                </span>
-
-              </Link>
-            </div>
-            
-            {/* Right-aligned menu button */}
-            <div className="ml-auto">
-              <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="text-amber-400 hover:text-amber-300 p-2 transition-transform duration-300"
-              >
-                {isOpen ? <X size={24} className="rotate-90" /> : <Menu size={24} />}
-              </button>
-            </div>
+                ABC Club
+              </span>
+            </Link>
+          </div>
+          
+          {/* Menu button - moved to the right */}
+          <div className="absolute right-4">
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className={`p-2 transition-all duration-300 ${
+                scrolled ? 'text-amber-500' : 'text-amber-400'
+              } hover:text-amber-300`}
+              aria-label="Toggle menu"
+            >
+              {isOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Animated dropdown menu */}
+      {/* Dropdown menu */}
       <div 
-        className={`w-full bg-transparent transform transition-all duration-500 ease-in-out ${
+        className={`absolute w-full transform transition-all duration-500 ease-in-out ${
           isOpen 
             ? 'opacity-100 translate-y-0' 
             : 'opacity-0 -translate-y-full pointer-events-none'
-        }`}
+        } ${scrolled ? 'bg-black/90 backdrop-blur-sm' : 'bg-black'}`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex flex-wrap justify-center items-center gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:flex lg:flex-wrap justify-center items-center gap-4 lg:gap-6">
             {navigation.map((item, index) => (
               <Link
                 key={item.name}

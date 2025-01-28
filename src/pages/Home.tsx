@@ -13,7 +13,7 @@ export default function Home() {
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-900/20 to-black/50" />
-          <img
+<img
             src="src/pages/frequency-wave-7776034.jpg"
             alt="AI Background"
             className="w-full h-full object-cover"
@@ -42,7 +42,7 @@ export default function Home() {
             Exploring the frontiers of Data Science and Artificial Intelligence
           </motion.p>
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+                      initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
