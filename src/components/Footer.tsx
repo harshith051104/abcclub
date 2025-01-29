@@ -13,9 +13,9 @@ export default function Footer() {
               alt="ABC Club Logo"
               className="w-16 h-16 mb-4"
             />
-            <h3 className="text-2xl font-bold text-white">ABC Club</h3>
+            <h3 className="text-2xl font-bold text-amber-400">ABC Club</h3>
             <p className="text-lg text-gray-400">AnyBody Can Code Club</p>
-            <h4 className="text-xl font-bold text-white mt-4 flex items-center">
+            <h4 className="text-xl font-bold text-amber-400 mt-4 flex items-center">
               <MapPin size={20} className="mr-2" />
               Location
             </h4>
@@ -23,7 +23,7 @@ export default function Footer() {
               Address: Survey No. 156/157, IFHE-IBS Campus, Donthanapally
               Shankarapalli Road, Hyderabad, Telangana 501203
             </p>
-            <h4 className="text-xl font-bold text-white mt-4">Contact Us</h4>
+            <h4 className="text-xl font-bold text-amber-400 mt-4">Contact Us</h4>
             <div className="flex space-x-4 mt-2">
               <a
                 href="https://www.instagram.com/abc._.club/"
@@ -57,22 +57,22 @@ export default function Footer() {
             <h3 className="text-2xl font-bold text-white mb-4">What We Offer</h3>
             <ul className="space-y-4 text-gray-400">
               <li>
-                <strong className="text-white">Workshops & Seminars:</strong>{" "}
+                <strong className="text-amber-400">Workshops & Seminars:</strong>{" "}
                 Regular events led by industry experts to stay updated with the
                 latest trends in DSAI.
               </li>
               <li>
-                <strong className="text-white">Hackathons & Competitions:</strong>{" "}
+                <strong className="text-amber-400">Hackathons & Competitions:</strong>{" "}
                 Test your skills, solve real-world challenges, and collaborate
                 with like-minded individuals.
               </li>
               <li>
-                <strong className="text-white">Projects & Mentorship:</strong>{" "}
+                <strong className="text-amber-400">Projects & Mentorship:</strong>{" "}
                 Gain practical experience through guided projects and mentorship
                 from experienced professionals.
               </li>
               <li>
-                <strong className="text-white">Networking Opportunities:</strong>{" "}
+                <strong className="text-amber-400">Networking Opportunities:</strong>{" "}
                 Connect with peers, industry leaders, and organizations to build
                 meaningful relationships and advance your career.
               </li>
@@ -80,7 +80,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-gray-800">
-          <p className="text-center text-gray-400">
+          <p className="text-center text-gray-100">
             © {new Date().getFullYear()} ABC Club. All rights reserved.
           </p>
         </div>
