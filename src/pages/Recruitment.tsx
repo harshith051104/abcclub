@@ -34,7 +34,7 @@ export default function Recruitment() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-gray-900/50 backdrop-blur-lg rounded-xl p-8 border border-blue-900/50"
+          className="bg-gray-900/50 backdrop-blur-lg rounded-xl p-8 border-2 border-yellow-500" // Updated border
         >
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Name */}

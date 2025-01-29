@@ -39,16 +39,31 @@ export default function Contact() {
               <div className="flex items-center">
                 <Phone className="h-6 w-6 text-blue-400 mr-4" />
                 <div>
-                  <p className="text-white">Call Us</p>
-                  <p className="text-gray-400">+91 9014825007</p>
-                </div>
+  <p className="text-white">Call Us</p>
+  <p className="mt-2">
+    <a className="text-gray-400 hover:text-yellow-500 underline" href="tel:+919949169108">
+      B. Nithya: +91 9949169108
+    </a>
+  </p>
+  <p className="mt-2">
+    <a className="text-gray-400 hover:text-yellow-500 underline" href="tel:+919014825007">
+      G. Sri Harshith: +91 9014825007
+    </a>
+  </p>
+</div>
+
               </div>
               <div className="flex items-center">
                 <Mail className="h-6 w-6 text-blue-400 mr-4" />
                 <div>
-                  <p className="text-white">Email Us</p>
-                  <p className="text-gray-400">anybodycancodeclub@gmail.com</p>
-                </div>
+  <p className="text-white">Email Us</p>
+  <p className="mt-2">
+    <a className="text-gray-400 hover:text-yellow-500 underline" href="mailto:abcclub.icfaitech@ifheindia.org">
+      abcclub.icfaitech@ifheindia.org
+    </a>
+  </p>
+</div>
+
               </div>
             </div>
 
@@ -59,19 +74,19 @@ export default function Contact() {
               <div className="flex space-x-4">
                 <a
                   href="https://www.instagram.com/abc._.club/"
-                  className="text-gray-400 hover:text-blue-400 transition-colors"
+                  className="text-gray-400 hover:text-pink-400 transition-colors"
                 >
                   <Instagram className="h-6 w-6" />
                 </a>
                 <a
                   href="https://www.linkedin.com/in/abc-club-b01830332/"
-                  className="text-gray-400 hover:text-blue-400 transition-colors"
+                  className="text-gray-400 hover:text-blue-900 transition-colors"
                 >
                   <Linkedin className="h-6 w-6" />
                 </a>
                 <a
                   href="#"
-                  className="text-gray-400 hover:text-blue-400 transition-colors"
+                  className="text-gray-400 hover:text-white transition-colors"
                 >
                   <Github className="h-6 w-6" />
                 </a>

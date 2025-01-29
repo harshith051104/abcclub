@@ -27,25 +27,25 @@ export default function Footer() {
             <div className="flex space-x-4 mt-2">
               <a
                 href="https://www.instagram.com/abc._.club/"
-                className="text-gray-400 hover:text-blue-400 transition-colors"
+                className="text-gray-400 hover:text-pink-400 transition-colors"
               >
                 <Instagram size={24} />
               </a>
               <a
                 href="https://www.linkedin.com/in/abc-club-b01830332/"
-                className="text-gray-400 hover:text-blue-400 transition-colors"
+                className="text-gray-400 hover:text-blue-900 transition-colors"
               >
                 <Linkedin size={24} />
               </a>
               <a
                 href="#"
-                className="text-gray-400 hover:text-blue-400 transition-colors"
+                className="text-gray-400 hover:text-white transition-colors"
               >
                 <Github size={24} />
               </a>
               <a
                 href="mailto:anybodycancodeclub@gmail.com"
-                className="text-gray-400 hover:text-blue-400 transition-colors"
+                className="text-gray-400 hover:text-red-600 transition-colors"
               >
                 <Mail size={24} />
               </a>

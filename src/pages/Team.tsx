@@ -63,31 +63,27 @@ export default function Team({ isEditor = true }) {
   const handleSaveCrop = () => {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    const cropSize = 300; // Size of the circular crop
+    const img = imageRef.current;
     
-    canvas.width = cropSize;
-    canvas.height = cropSize;
+    // Use the original image dimensions
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
     
-    // Create circular clipping path
-    ctx.beginPath();
-    ctx.arc(cropSize / 2, cropSize / 2, cropSize / 2, 0, Math.PI * 2);
-    ctx.clip();
-    
-    // Draw the transformed image
-    ctx.translate(cropSize / 2, cropSize / 2);
+    // Center the transformation
+    ctx.translate(canvas.width / 2, canvas.height / 2);
     ctx.rotate((imageRotation * Math.PI) / 180);
     ctx.scale(imageScale, imageScale);
     
-    const img = imageRef.current;
+    // Draw the image maintaining its original dimensions
     ctx.drawImage(
       img,
-      -cropSize / 2 - position.x / imageScale,
-      -cropSize / 2 - position.y / imageScale,
-      cropSize,
-      cropSize
+      -canvas.width / 2 - position.x / imageScale,
+      -canvas.height / 2 - position.y / imageScale,
+      canvas.width,
+      canvas.height
     );
     
-    const croppedImage = canvas.toDataURL('image/jpeg');
+    const croppedImage = canvas.toDataURL('image/jpeg', 1.0);
     setEditingMember({ ...editingMember, image: croppedImage });
     setCropMode(false);
   };
@@ -143,7 +139,7 @@ export default function Team({ isEditor = true }) {
           <form onSubmit={handleSaveMember} className="space-y-4">
             <div className="flex justify-center mb-6">
               {cropMode ? (
-                <div className="relative w-64 h-64 overflow-hidden rounded-full border-2 border-yellow-400">
+                <div className="relative w-full max-w-[600px] h-[400px] overflow-hidden border-2 border-yellow-400">
                   <div
                     className="absolute inset-0 cursor-move"
                     onMouseDown={handleDragStart}
@@ -158,9 +154,9 @@ export default function Team({ isEditor = true }) {
                       ref={imageRef}
                       src={editingMember.image}
                       alt="Crop preview"
-                      className="absolute transform origin-center"
+                      className="max-w-none w-auto h-auto"
                       style={{
-                        transform:`translate(${position.x}px, ${position.y}px) rotate(${imageRotation}deg) scale(${imageScale})`,
+                        transform: `translate(${position.x}px, ${position.y}px) rotate(${imageRotation}deg) scale(${imageScale})`,
                       }}
                     />
                   </div>
@@ -200,7 +196,7 @@ export default function Team({ isEditor = true }) {
                   <img
                     src={editingMember.image}
                     alt="Preview"
-                    className="w-32 h-32 rounded-full object-cover border-2 border-yellow-400"
+                    className="max-w-[600px] max-h-[400px] w-auto h-auto object-contain border-2 border-yellow-400"
                   />
                   <button
                     type="button"
@@ -212,7 +208,7 @@ export default function Team({ isEditor = true }) {
                 </div>
               ) : (
                 <label className="cursor-pointer">
-                  <div className="w-32 h-32 rounded-full border-2 border-dashed border-yellow-400 flex items-center justify-center">
+                  <div className="w-[600px] h-[400px] border-2 border-dashed border-yellow-400 flex items-center justify-center">
                     <Upload className="w-8 h-8 text-yellow-400" />
                   </div>
                   <input
@@ -317,7 +313,6 @@ export default function Team({ isEditor = true }) {
                   alt={member.name}
                   className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-in-out"
                 />
-                {/* Gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
               </div>
 
@@ -338,7 +333,6 @@ export default function Team({ isEditor = true }) {
                 </div>
               )}
 
-              {/* Content overlay */}
               <div className="absolute inset-0 flex flex-col justify-end p-6 translate-y-20 group-hover:translate-y-0 transition-transform duration-500">
                 <motion.div
                   initial={{ opacity: 0 }}
@@ -368,7 +362,6 @@ export default function Team({ isEditor = true }) {
                 </motion.div>
               </div>
 
-              {/* Initial name display */}
               <div className="absolute inset-x-0 bottom-0 p-4 text-center transform translate-y-0 group-hover:translate-y-4 opacity-100 group-hover:opacity-0 transition-all duration-300">
                 <h3 className="text-xl font-semibold text-white">
                   {member.name}
