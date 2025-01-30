@@ -27,7 +27,7 @@ export default function Navbar() {
   // Load Google Font for Navbar items
   useEffect(() => {
     loadGoogleFont('Emilys Candy');
-    loadGoogleFont('Young Serif');
+    loadGoogleFont('Fredericka the Great');
   }, []);
 
   // Handle scroll events
@@ -66,7 +66,7 @@ export default function Navbar() {
                   scrolled ? 'text-amber-400' : 'text-amber-400'
                 }`}
                 style={{
-                  fontFamily: "'Young Serif', serif", // Example font for the logo
+                  fontFamily: "'Fredericka the Great', feeling", // Example font for the logo
                 }}
               >
                 ABC Club

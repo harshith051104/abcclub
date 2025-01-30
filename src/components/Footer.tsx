@@ -19,10 +19,17 @@ export default function Footer() {
               <MapPin size={20} className="mr-2" />
               Location
             </h4>
-            <p className="text-gray-400">
-              Address: Survey No. 156/157, IFHE-IBS Campus, Donthanapally
-              Shankarapalli Road, Hyderabad, Telangana 501203
-            </p>
+            <p className="mt-2">
+  <a
+    className="text-gray-400 hover:text-white underline"
+    href="https://www.google.com/maps/search/?api=1&query=Survey+No.+156%2F157%2C+IFHE-IBS+Campus%2C+Donthanapally%2C+Shankarapalli+Road%2C+Hyderabad%2C+Telangana+501203"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Address: Survey No. 156/157, IFHE-IBS Campus, Donthanapally, Shankarapalli Road, Hyderabad, Telangana 501203
+  </a>
+</p>
+
             <h4 className="text-xl font-bold text-amber-400 mt-4">Contact Us</h4>
             <div className="flex space-x-4 mt-2">
               <a
