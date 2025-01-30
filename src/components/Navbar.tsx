@@ -46,8 +46,10 @@ export default function Navbar() {
     { name: 'Events', href: '/events' },
     { name: 'Gallery', href: '/gallery' },
     { name: 'Team', href: '/team' },
+    { name: 'Hackathon', href: '/hackathon' },
     { name: 'Join Us', href: '/recruitment' },
     { name: 'Contact', href: '/contact' },
+     // Hackathon button links directly to the Overview page
   ];
 
   return (
@@ -92,9 +94,7 @@ export default function Navbar() {
       {/* Dropdown menu */}
       <div
         className={`absolute w-full transform transition-all duration-500 ease-in-out ${
-          isOpen
-            ? 'opacity-100 translate-y-0'
-            : 'opacity-0 -translate-y-full pointer-events-none'
+          isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full pointer-events-none'
         } ${scrolled ? 'bg-black/90 backdrop-blur-sm' : 'bg-black'}`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">

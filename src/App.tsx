@@ -9,6 +9,11 @@ import Team from './pages/Team';
 import Recruitment from './pages/Recruitment';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
+import Hackathon from './pages/Hackathon';
+import HackathonRegister from './pages/HackathonRegister';
+import HackathonLogin from './pages/HackathonLogin';
+import HackathonProblems from './pages/HackathonProblems';
+import SignUp from './pages/SignUp';
 
 function App() {
   return (
@@ -24,6 +29,11 @@ function App() {
             <Route path="/recruitment" element={<Recruitment />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/hackathon" element={<Hackathon />} />
+            <Route path="/hackathon/register" element={<HackathonRegister />} />
+            <Route path="/hackathon/login" element={<HackathonLogin />} />
+            <Route path="/hackathon/problems" element={<HackathonProblems />} />
+            <Route path="/signup" element={<SignUp />} />
           </Routes>
         </main>
         <Footer />
