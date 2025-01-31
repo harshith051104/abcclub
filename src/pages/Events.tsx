@@ -1,14 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, MapPin, Clock, ChevronDown, ChevronUp, Plus, Upload, X, Edit2, Trash2, Bell } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+
+interface Event {
+  id: string;
+  title: string;
+  date: string;
+  time: string;
+  location: string;
+  description: string;
+  imageUrl: string;
+  imageFile: File | null;
+  duration: string;
+  googleFormUrl: string;
+}
+
+interface ExpandedCards {
+  [key: string]: boolean;
+}
 
 const EventsEditor = () => {
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const [isEditing, setIsEditing] = useState(false);
-  const [editingEvent, setEditingEvent] = useState(null);
-  const [expandedCards, setExpandedCards] = useState({});
+  const [editingEvent, setEditingEvent] = useState<string | null>(null);
+  const [expandedCards, setExpandedCards] = useState<ExpandedCards>({});
   const [imagePreview, setImagePreview] = useState('');
   const [notificationPermission, setNotificationPermission] = useState('default');
-  const [newEvent, setNewEvent] = useState({
+  const { isEditor, toggleEditor } = useAuth();
+  const [newEvent, setNewEvent] = useState<Event>({
     title: '',
     date: '',
     time: '',
@@ -16,7 +35,8 @@ const EventsEditor = () => {
     description: '',
     imageUrl: '',
     imageFile: null,
-    duration: '60'
+    duration: '60',
+    googleFormUrl: '',
   });
 
   useEffect(() => {
@@ -26,13 +46,13 @@ const EventsEditor = () => {
     }
   }, []);
 
-  const parseTime = (timeStr) => {
+  const parseTime = (timeStr: string) => {
     const [start] = timeStr.split('-').map(t => t.trim());
     const [hours, minutes] = start.split(':').map(num => parseInt(num));
     return { hours, minutes };
   };
 
-  const createGoogleCalendarUrl = (event) => {
+  const createGoogleCalendarUrl = (event: Event) => {
     const { hours, minutes } = parseTime(event.time);
     const eventDate = new Date(event.date);
     eventDate.setHours(hours, minutes, 0);
@@ -97,24 +117,25 @@ const EventsEditor = () => {
       alert('Failed to set device reminder. Please check your browser notifications settings.');
     }
   };
-
   const resetForm = () => {
     setNewEvent({
+      id: '',
       title: '',
       date: '',
-      time: '',
+      time: '', 
       location: '',
       description: '',
       imageUrl: '',
       imageFile: null,
-      duration: '60'
+      duration: '60',
+      googleFormUrl: '',
     });
     setImagePreview('');
     setIsEditing(false);
     setEditingEvent(null);
   };
 
-  const handleEdit = (event) => {
+  const handleEdit = (event: Event) => {
     setEditingEvent(event.id);
     setIsEditing(true);
     setNewEvent({
@@ -125,20 +146,20 @@ const EventsEditor = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleDelete = (eventId) => {
+  const handleDelete = (eventId: string) => {
     if (window.confirm('Are you sure you want to delete this event?')) {
       setEvents(prev => prev.filter(event => event.id !== eventId));
     }
   };
 
-  const toggleDescription = (id) => {
+  const toggleDescription = (id: string) => {
     setExpandedCards(prev => ({
       ...prev,
       [id]: !prev[id]
     }));
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setNewEvent(prev => ({
       ...prev,
@@ -146,8 +167,8 @@ const EventsEditor = () => {
     }));
   };
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
         alert('File size must be less than 5MB');
@@ -176,7 +197,7 @@ const EventsEditor = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     // Validate time format
@@ -206,14 +227,39 @@ const EventsEditor = () => {
     resetForm();
   };
 
-  const validateTimeInput = (input) => {
+  const validateTimeInput = (input: string) => {
     const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9](\s*-\s*([0-1]?[0-9]|2[0-3]):[0-5][0-9])?$/;
     return timeRegex.test(input) ? '' : 'Please enter time in format HH:MM or HH:MM - HH:MM';
+  };
+
+  const handleParticipate = (event: Event) => {
+    // Open Google Form in a new window
+    const formWindow = window.open(event.googleFormUrl, '_blank');
+    
+    // Listen for message from Google Form completion
+    window.addEventListener('message', (e) => {
+      // Verify message origin is from your Google Form domain
+      if (e.origin === 'https://docs.google.com') {
+        if (e.data.formSubmitted) {
+          // Automatically add to calendar after form submission
+          window.open(createGoogleCalendarUrl(event), '_blank');
+        }
+      }
+    });
   };
 
   return (
     <div className="min-h-screen py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
+        {isEditor && (
+          <button
+            onClick={toggleEditor}
+            className="fixed top-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg"
+          >
+            {isEditor ? 'Switch to User Mode' : 'Switch to Editor Mode'}
+          </button>
+        )}
+
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
             Upcoming Events
@@ -221,7 +267,7 @@ const EventsEditor = () => {
           <p className="text-gray-400 mb-4">
             Join us in our upcoming events and be part of the community
           </p>
-          {!isEditing && (
+          {isEditor && !isEditing && (
             <button
               onClick={() => setIsEditing(true)}
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 mx-auto"
@@ -232,7 +278,7 @@ const EventsEditor = () => {
           )}
         </div>
 
-        {isEditing && (
+        {isEditor && isEditing && (
           <div className="max-w-xl mx-auto mb-12 bg-gray-900/50 backdrop-blur-lg rounded-xl p-6 border border-blue-900/50">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold text-white">
@@ -362,6 +408,19 @@ const EventsEditor = () => {
                 />
               </div>
 
+              <div>
+                <label className="block text-gray-400 mb-2">Google Form URL</label>
+                <input
+                  type="url"
+                  name="googleFormUrl"
+                  value={newEvent.googleFormUrl}
+                  onChange={handleInputChange}
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white"
+                  required
+                  placeholder="https://docs.google.com/forms/..."
+                />
+              </div>
+
               <div className="flex gap-4">
                 <button
                   type="button"
@@ -393,20 +452,22 @@ const EventsEditor = () => {
                   alt={event.title}
                   className="w-full h-48 object-cover"
                 />
-                <div className="absolute top-2 right-2 flex gap-2">
-                  <button
-                    onClick={() => handleEdit(event)}
-                    className="p-2 bg-blue-600 rounded-lg text-white hover:bg-blue-700 transition-colors"
-                  >
-                    <Edit2 className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(event.id)}
-                    className="p-2 bg-red-600 rounded-lg text-white hover:bg-red-700 transition-colors"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </div>
+                {isEditor && (
+                  <div className="absolute top-2 right-2 flex gap-2">
+                    <button
+                      onClick={() => handleEdit(event)}
+                      className="p-2 bg-blue-600 rounded-lg text-white hover:bg-blue-700 transition-colors"
+                    >
+                      <Edit2 className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(event.id)}
+                      className="p-2 bg-red-600 rounded-lg text-white hover:bg-red-700 transition-colors"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                )}
               </div>
               
               <div className="p-6">
@@ -464,7 +525,10 @@ const EventsEditor = () => {
                     </button>
                   </div>
                   
-                  <button className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors duration-200">
+                  <button 
+                    onClick={() => handleParticipate(event)}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors duration-200"
+                  >
                     Register Now
                   </button>
                 </div>

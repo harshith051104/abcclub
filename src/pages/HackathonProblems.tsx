@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Plus, Edit2, Trash2 } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import SaveButton from '../components/SaveButton';
 
 interface Problem {
   id: number;
@@ -8,7 +10,12 @@ interface Problem {
   requirements: string[];
 }
 
-export default function HackathonProblems({ isEditor = false }) {
+interface ExpandedProblems {
+  [key: number]: boolean;
+}
+
+export default function HackathonProblems() {
+  const { isEditor } = useAuth();
   const [problems, setProblems] = useState<Problem[]>([
     {
       id: 1,
@@ -23,13 +30,37 @@ export default function HackathonProblems({ isEditor = false }) {
     }
   ]);
 
-  const [expandedProblems, setExpandedProblems] = useState({});
-  const [selectedProblem, setSelectedProblem] = useState(null);
+  const [expandedProblems, setExpandedProblems] = useState<ExpandedProblems>({});
+  const [selectedProblem, setSelectedProblem] = useState<number | null>(null);
   const [showThankYou, setShowThankYou] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingProblem, setEditingProblem] = useState<Problem | null>(null);
+  const [hasChanges, setHasChanges] = useState(false);
 
-  const toggleProblem = (id) => {
+  // Load problems from localStorage on mount
+  useEffect(() => {
+    const savedProblems = localStorage.getItem('hackathonProblems');
+    if (savedProblems) {
+      setProblems(JSON.parse(savedProblems));
+    }
+  }, []);
+
+  const handleSaveChanges = () => {
+    try {
+      localStorage.setItem('hackathonProblems', JSON.stringify(problems));
+      setHasChanges(false);
+      alert('Problems saved successfully!');
+    } catch (error) {
+      alert('Failed to save problems. Please try again.');
+    }
+  };
+
+  // Update hasChanges whenever problems changes
+  useEffect(() => {
+    setHasChanges(true);
+  }, [problems]);
+
+  const toggleProblem = (id: number) => {
     setExpandedProblems(prev => ({
       ...prev,
       [id]: !prev[id]
@@ -45,27 +76,28 @@ export default function HackathonProblems({ isEditor = false }) {
   };
 
   const handleAddProblem = () => {
-    setEditingProblem({
+    const newProblem: Problem = {
       id: problems.length + 1,
       title: '',
       description: '',
       requirements: ['']
-    });
+    };
+    setEditingProblem(newProblem);
     setIsEditing(true);
   };
 
-  const handleEditProblem = (problem) => {
+  const handleEditProblem = (problem: Problem) => {
     setEditingProblem(problem);
     setIsEditing(true);
   };
 
-  const handleDeleteProblem = (problemId) => {
+  const handleDeleteProblem = (problemId: number) => {
     if (window.confirm('Are you sure you want to delete this problem?')) {
       setProblems(prev => prev.filter(p => p.id !== problemId));
     }
   };
 
-  const handleSaveProblem = (e) => {
+  const handleSaveProblem = (e: React.FormEvent) => {
     e.preventDefault();
     if (editingProblem) {
       setProblems(prev => {
@@ -81,24 +113,30 @@ export default function HackathonProblems({ isEditor = false }) {
   };
 
   const addRequirement = () => {
-    setEditingProblem(prev => ({
-      ...prev,
-      requirements: [...prev.requirements, '']
-    }));
+    if (editingProblem) {
+      setEditingProblem({
+        ...editingProblem,
+        requirements: [...editingProblem.requirements, '']
+      });
+    }
   };
 
-  const updateRequirement = (index, value) => {
-    setEditingProblem(prev => ({
-      ...prev,
-      requirements: prev.requirements.map((req, i) => i === index ? value : req)
-    }));
+  const updateRequirement = (index: number, value: string) => {
+    if (editingProblem) {
+      setEditingProblem({
+        ...editingProblem,
+        requirements: editingProblem.requirements.map((req, i) => i === index ? value : req)
+      });
+    }
   };
 
-  const removeRequirement = (index) => {
-    setEditingProblem(prev => ({
-      ...prev,
-      requirements: prev.requirements.filter((_, i) => i !== index)
-    }));
+  const removeRequirement = (index: number) => {
+    if (editingProblem) {
+      setEditingProblem({
+        ...editingProblem,
+        requirements: editingProblem.requirements.filter((_, i) => i !== index)
+      });
+    }
   };
 
   if (showThankYou) {
@@ -119,7 +157,7 @@ export default function HackathonProblems({ isEditor = false }) {
     );
   }
 
-  if (isEditing && isEditor) {
+  if (isEditing && isEditor && editingProblem) {
     return (
       <div className="min-h-screen py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mx-auto">
@@ -135,7 +173,7 @@ export default function HackathonProblems({ isEditor = false }) {
               <input
                 type="text"
                 value={editingProblem.title}
-                onChange={(e) => setEditingProblem(prev => ({ ...prev, title: e.target.value }))}
+                onChange={(e) => setEditingProblem({ ...editingProblem, title: e.target.value })}
                 className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white"
                 required
               />
@@ -147,7 +185,7 @@ export default function HackathonProblems({ isEditor = false }) {
               </label>
               <textarea
                 value={editingProblem.description}
-                onChange={(e) => setEditingProblem(prev => ({ ...prev, description: e.target.value }))}
+                onChange={(e) => setEditingProblem({ ...editingProblem, description: e.target.value })}
                 className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white h-32"
                 required
               />
@@ -169,7 +207,7 @@ export default function HackathonProblems({ isEditor = false }) {
                   <button
                     type="button"
                     onClick={() => removeRequirement(index)}
-                    className="p-2 bg-red-600 rounded-lg text-white"
+                    className="p-2 bg-red-600 rounded-lg text-white hover:bg-red-700"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -178,9 +216,10 @@ export default function HackathonProblems({ isEditor = false }) {
               <button
                 type="button"
                 onClick={addRequirement}
-                className="text-blue-400 hover:text-blue-300 text-sm"
+                className="text-blue-400 hover:text-blue-300 text-sm flex items-center gap-1"
               >
-                + Add Requirement
+                <Plus className="w-4 h-4" />
+                Add Requirement
               </button>
             </div>
 
@@ -307,6 +346,11 @@ export default function HackathonProblems({ isEditor = false }) {
           </button>
         )}
       </div>
+
+      {/* Show save button when there are changes and user is editor */}
+      {hasChanges && isEditor && (
+        <SaveButton onSave={handleSaveChanges} />
+      )}
     </div>
   );
 }

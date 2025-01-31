@@ -1,16 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Upload, X, Plus, ArrowLeft } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import SaveButton from '../components/SaveButton';
 
-// Initial gallery items
-const initialGalleryItems = [];
+// Define the GalleryItem type
+interface GalleryItem {
+  id: string;
+  image: string;
+  title: string;
+  description: string;
+}
 
-export default function Gallery({ isEditor = true }) {
+// Initial gallery items with proper type
+const initialGalleryItems: GalleryItem[] = [];
+
+export default function Gallery() {
   const [isManagementView, setIsManagementView] = useState(false);
-  const [galleryItems, setGalleryItems] = useState(initialGalleryItems);
-  const [newImage, setNewImage] = useState(null);
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>(initialGalleryItems);
+  const [newImage, setNewImage] = useState<string | null>(null);
   const [newTitle, setNewTitle] = useState('');
   const [newDescription, setNewDescription] = useState('');
+  const { isEditor } = useAuth();
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];

@@ -15,6 +15,8 @@ export default function HackathonRegister() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Here you would typically send the data to your backend
+    // For demo, we'll simulate sending credentials to email
     alert('Registration successful! Check your email for login credentials.');
     navigate('/hackathon/login');
   };
@@ -36,13 +38,12 @@ export default function HackathonRegister() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-100 mb-1">
+              <label className="block text-sm font-medium text-gray-400 mb-1">
                 First Name
               </label>
               <input
                 type="text"
                 name="firstName"
-                value={formData.firstName}
                 required
                 className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white"
                 onChange={handleChange}
@@ -55,7 +56,6 @@ export default function HackathonRegister() {
               <input
                 type="text"
                 name="lastName"
-                value={formData.lastName}
                 required
                 className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white"
                 onChange={handleChange}
@@ -70,7 +70,6 @@ export default function HackathonRegister() {
             <input
               type="email"
               name="email"
-              value={formData.email}
               required
               className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white"
               onChange={handleChange}
@@ -84,7 +83,6 @@ export default function HackathonRegister() {
             <input
               type="text"
               name="college"
-              value={formData.college}
               required
               className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white"
               onChange={handleChange}
@@ -98,7 +96,6 @@ export default function HackathonRegister() {
             <input
               type="text"
               name="branch"
-              value={formData.branch}
               required
               className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white"
               onChange={handleChange}
@@ -111,7 +108,6 @@ export default function HackathonRegister() {
             </label>
             <select
               name="year"
-              value={formData.year}
               required
               className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white"
               onChange={handleChange}
@@ -131,7 +127,6 @@ export default function HackathonRegister() {
             <input
               type="tel"
               name="phone"
-              value={formData.phone}
               required
               className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white"
               onChange={handleChange}

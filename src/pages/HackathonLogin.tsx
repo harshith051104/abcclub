@@ -30,9 +30,7 @@ export default function HackathonLogin() {
               type="email"
               required
               className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white"
-              onChange={(e) =>
-                setCredentials((prev) => ({ ...prev, username: e.target.value }))
-              }
+              onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
             />
           </div>
 
@@ -44,9 +42,7 @@ export default function HackathonLogin() {
               type="password"
               required
               className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white"
-              onChange={(e) =>
-                setCredentials((prev) => ({ ...prev, password: e.target.value }))
-              }
+              onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
             />
           </div>
 

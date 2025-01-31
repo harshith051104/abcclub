@@ -34,7 +34,7 @@ export default function Recruitment() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-gray-900/50 backdrop-blur-lg rounded-xl p-8 border-2 border-yellow-500" // Updated border
+          className="bg-gray-900/50 backdrop-blur-lg rounded-xl p-8 border-2 border-yellow-600/50 hover:border-yellow-400 transition-all duration-500 shadow-[0_0_15px_rgba(234,179,8,0.1)]"
         >
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Name */}
@@ -42,7 +42,8 @@ export default function Recruitment() {
               <label className="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
               <input
                 {...register('name', { required: 'Name is required' })}
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all duration-300"
+                placeholder="Enter your full name"
               />
               {errors.name && <p className="mt-1 text-sm text-red-400">{errors.name.message}</p>}
             </div>
@@ -52,7 +53,8 @@ export default function Recruitment() {
               <label className="block text-sm font-medium text-gray-300 mb-2">Enrollment Number</label>
               <input
                 {...register('enrollmentNumber', { required: 'Enrollment Number is required' })}
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all duration-300"
+                placeholder="Enter your enrollment number"
               />
               {errors.enrollmentNumber && (
                 <p className="mt-1 text-sm text-red-400">{errors.enrollmentNumber.message}</p>
@@ -71,7 +73,8 @@ export default function Recruitment() {
                     message: 'Invalid IFHE mail',
                   },
                 })}
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all duration-300"
+                placeholder="Enter your IFHE email"
               />
               {errors.ifheMail && <p className="mt-1 text-sm text-red-400">{errors.ifheMail.message}</p>}
             </div>
@@ -82,7 +85,8 @@ export default function Recruitment() {
               <input
                 type="tel"
                 {...register('contactNumber', { required: 'Contact number is required' })}
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all duration-300"
+                placeholder="Enter your contact number"
               />
               {errors.contactNumber && (
                 <p className="mt-1 text-sm text-red-400">{errors.contactNumber.message}</p>
@@ -94,7 +98,7 @@ export default function Recruitment() {
               <label className="block text-sm font-medium text-gray-300 mb-2">Academic Year</label>
               <select
                 {...register('academicYear', { required: 'Please select an academic year' })}
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all duration-300"
               >
                 <option value="">Select your academic year</option>
                 <option value="1st">1st year</option>
@@ -112,7 +116,7 @@ export default function Recruitment() {
               <label className="block text-sm font-medium text-gray-300 mb-2">Branch</label>
               <select
                 {...register('branch', { required: 'Please select your branch' })}
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all duration-300"
               >
                 <option value="">Select your branch</option>
                 <option value="BTECH">BTECH</option>
@@ -128,7 +132,8 @@ export default function Recruitment() {
               <textarea
                 {...register('experience')}
                 rows={4}
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all duration-300"
+                placeholder="Tell us about your relevant experience..."
               ></textarea>
             </div>
 
@@ -137,7 +142,7 @@ export default function Recruitment() {
               <label className="block text-sm font-medium text-gray-300 mb-2">Preferred Domain</label>
               <select
                 {...register('preferredDomain', { required: 'Please select a preferred domain' })}
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all duration-300"
               >
                 <option value="">Select a domain</option>
                 <option value="technical">Technical</option>
@@ -155,7 +160,7 @@ export default function Recruitment() {
             <div>
               <button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors duration-200"
+                className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-500 text-white py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-[1.02] focus:scale-[0.98]"
               >
                 Submit Application
               </button>

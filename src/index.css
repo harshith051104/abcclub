@@ -35,3 +35,41 @@ body {
   margin-bottom: 1rem;
   text-align: center;
 }
+
+/* Responsive utilities */
+@layer utilities {
+  .responsive-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  .responsive-padding {
+    @apply py-8 sm:py-12 md:py-20;
+  }
+  
+  .responsive-text {
+    @apply text-sm sm:text-base;
+  }
+  
+  .responsive-heading {
+    @apply text-3xl sm:text-4xl lg:text-5xl font-bold;
+  }
+}
+
+/* Form responsiveness */
+.form-input {
+  @apply w-full px-3 sm:px-4 py-2 text-sm sm:text-base;
+}
+
+.form-label {
+  @apply block text-sm sm:text-base font-medium mb-1 sm:mb-2;
+}
+
+/* Card responsiveness */
+.responsive-card {
+  @apply bg-gray-900/50 backdrop-blur-lg rounded-xl p-6 sm:p-8 border border-blue-900/50;
+}
+
+/* Grid responsiveness */
+.responsive-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8;
+}
