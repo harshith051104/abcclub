@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Calendar, MapPin, Clock, Trophy, Users, Code, ArrowRight, Lightbulb, Target, Upload, X, Save } from 'lucide-react';
+import { Calendar, MapPin, Clock, Trophy, Users, Code, ArrowRight, Lightbulb, Target, Upload, X, Edit2, Trash2 } from 'lucide-react';
 import SaveButton from '../components/SaveButton';
+import { motion } from 'framer-motion';
 
 const Hackathon = () => {
   const { isEditor } = useAuth();
@@ -25,8 +26,17 @@ const Hackathon = () => {
       reader.onloadend = () => {
         setPosterImage(reader.result as string);
         setIsEditingPoster(false);
+        setHasChanges(true);
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemovePoster = () => {
+    if (window.confirm('Are you sure you want to remove this poster?')) {
+      setPosterImage('/hackathon-poster.jpg');
+      localStorage.removeItem('hackathonPoster');
+      setHasChanges(true);
     }
   };
 
@@ -58,7 +68,7 @@ const Hackathon = () => {
             className="w-full h-[500px] object-cover"
           />
           {isEditor && (
-            <div className="absolute top-4 right-4 z-10">
+            <div className="absolute top-4 right-4 z-10 flex gap-2">
               {isEditingPoster ? (
                 <div className="bg-black/80 backdrop-blur-sm p-4 rounded-lg">
                   <label className="cursor-pointer flex items-center gap-2 text-white">
@@ -80,12 +90,22 @@ const Hackathon = () => {
                   </button>
                 </div>
               ) : (
-                <button
-                  onClick={() => setIsEditingPoster(true)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
-                >
-                  Edit Poster
-                </button>
+                <>
+                  <button
+                    onClick={() => setIsEditingPoster(true)}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                  >
+                    <Edit2 className="w-5 h-5" />
+                    <span>Edit</span>
+                  </button>
+                  <button
+                    onClick={handleRemovePoster}
+                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                    <span>Remove</span>
+                  </button>
+                </>
               )}
             </div>
           )}
