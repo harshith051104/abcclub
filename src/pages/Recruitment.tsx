@@ -120,8 +120,8 @@ export default function Recruitment() {
               >
                 <option value="">Select your branch</option>
                 <option value="BTECH">BTECH</option>
-                <option value="BSC">BSC</option>
                 <option value="BCA">BCA</option>
+                <option value="BSC">BSC</option>
               </select>
               {errors.branch && <p className="mt-1 text-sm text-red-400">{errors.branch.message}</p>}
             </div>

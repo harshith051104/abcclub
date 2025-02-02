@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, User, LogOut, Settings, Lock } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -25,6 +25,10 @@ export default function Navbar() {
   const [showChangePassword, setShowChangePassword] = useState(false);
   const location = useLocation();
   const { isEditor, logout } = useAuth();
+  
+  // Add refs for navbar and profile menu
+  const navbarRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
 
   // Load Google Font for Navbar items
   useEffect(() => {
@@ -43,9 +47,15 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close profile menu when clicking outside
+  // Handle click outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      // Close navbar if click is outside
+      if (navbarRef.current && !navbarRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+
+      // Close profile menu when clicking outside (original implementation)
       const profileMenu = document.getElementById('profile-menu');
       const profileButton = document.getElementById('profile-button');
       if (
@@ -95,10 +105,28 @@ export default function Navbar() {
       className={`fixed w-full z-50 transition-all duration-300 ${
         scrolled ? 'bg-black/90 backdrop-blur-sm' : 'bg-transparent'
       }`}
+      ref={navbarRef}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
+        <div className="flex items-center h-16">
+          {/* Mobile menu button - Left */}
+          <div className="sm:hidden w-10">
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className={`p-1.5 transition-all duration-300 ${
+                scrolled ? 'text-amber-400' : 'text-amber-400'
+              } hover:text-amber-300`}
+              aria-label="Toggle menu"
+            >
+              {isOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
+            </button>
+          </div>
+
+          {/* Logo - Centered */}
           <div className="flex-1 flex justify-center">
             <Link to="/" onClick={() => setIsOpen(false)}>
               <span
@@ -114,18 +142,21 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Menu and Profile buttons */}
-          <div className="absolute right-4 flex items-center gap-4">
+          {/* Profile and Menu - Right */}
+          <div className="w-10 flex items-center justify-end gap-2 sm:gap-4">
             {(isEditor || userRole === 'user') ? (
               <div className="relative">
                 <button
                   id="profile-button"
-                  onClick={() => setShowProfileMenu(!showProfileMenu)}
-                  className={`p-2 rounded-full transition-all duration-300 ${
+                  onClick={() => {
+                    setShowProfileMenu(!showProfileMenu);
+                    setIsOpen(false); // Close navbar when opening profile
+                  }}
+                  className={`p-1.5 sm:p-2 rounded-full transition-all duration-300 ${
                     scrolled ? 'bg-amber-400/10' : 'bg-amber-400/10'
                   } hover:bg-amber-400/20`}
                 >
-                  <User className="text-amber-400" size={24} />
+                  <User className="text-amber-400 w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
 
                 {showProfileMenu && (
@@ -176,26 +207,34 @@ export default function Navbar() {
             ) : (
               <Link
                 to="/login"
-                className="text-center py-2 px-6 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all duration-300"
+                className="hidden sm:inline-block text-center py-2 px-4 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all duration-300"
               >
                 Login
               </Link>
             )}
 
+            {/* Desktop menu button */}
             <button
-              onClick={() => setIsOpen(!isOpen)}
-              className={`p-2 transition-all duration-300 ${
+              onClick={() => {
+                setIsOpen(!isOpen);
+                setShowProfileMenu(false); // Close profile when opening navbar
+              }}
+              className={`hidden sm:block p-1.5 sm:p-2 transition-all duration-300 ${
                 scrolled ? 'text-amber-400' : 'text-amber-400'
               } hover:text-amber-300`}
               aria-label="Toggle menu"
             >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
+              {isOpen ? (
+                <X className="w-5 h-5 sm:w-6 sm:h-6" />
+              ) : (
+                <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
+              )}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Dropdown menu */}
+      {/* Dropdown menu - Vertical animation */}
       <div
         className={`absolute w-full transform transition-all duration-500 ease-in-out ${
           isOpen
@@ -205,6 +244,18 @@ export default function Navbar() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:flex lg:flex-wrap justify-center items-center gap-4 lg:gap-6">
+            {/* Mobile login button */}
+            {!isEditor && !userRole && (
+              <Link
+                to="/login"
+                className="sm:hidden block w-full text-center py-2 px-4 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all duration-300"
+                onClick={() => setIsOpen(false)}
+              >
+                Login
+              </Link>
+            )}
+
+            {/* Navigation links */}
             {navigation.map((item, index) => (
               <motion.div
                 key={item.name}
@@ -233,7 +284,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Add the ChangePassword modal */}
+      {/* Change password modal */}
       {showChangePassword && (
         <ChangePassword onClose={() => setShowChangePassword(false)} />
       )}

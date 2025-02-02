@@ -34,25 +34,37 @@ export default function Footer() {
             <div className="flex space-x-4 mt-2">
               <a
                 href="https://www.instagram.com/abc._.club/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-gray-400 hover:text-pink-400 transition-colors"
+                aria-label="Visit our Instagram"
               >
                 <Instagram size={24} />
               </a>
               <a
                 href="https://www.linkedin.com/in/abc-club-b01830332/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-gray-400 hover:text-blue-900 transition-colors"
+                aria-label="Visit our LinkedIn"
               >
                 <Linkedin size={24} />
               </a>
               <a
-                href="#"
+                href="https://github.com/ABC-Club-ICFAI"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white transition-colors"
+                aria-label="Visit our GitHub"
               >
                 <Github size={24} />
               </a>
               <a
-                href="mailto:anybodycancodeclub@gmail.com"
+                href="mailto:abcclub.icfaitech@ifheindia.org"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-gray-400 hover:text-red-600 transition-colors"
+                aria-label="Send us an email"
               >
                 <Mail size={24} />
               </a>

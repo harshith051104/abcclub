@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   Phone,
@@ -9,6 +9,59 @@ import {
 } from 'lucide-react';
 
 export default function Contact() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus('loading');
+    
+    try {
+      const response = await fetch('http://localhost:5000/api/email/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send message');
+      }
+
+      setStatus('success');
+      setFormData({
+        name: '',
+        email: '',
+        message: ''
+      });
+
+      // Reset success message after 3 seconds
+      setTimeout(() => {
+        setStatus('idle');
+      }, 3000);
+    } catch (error) {
+      console.error('Send message error:', error);
+      setStatus('error');
+      // Reset error message after 3 seconds
+      setTimeout(() => {
+        setStatus('idle');
+      }, 3000);
+    }
+  };
+
   return (
     <div className="min-h-screen py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -39,31 +92,47 @@ export default function Contact() {
               <div className="flex items-center">
                 <Phone className="h-6 w-6 text-blue-400 mr-4" />
                 <div>
-  <p className="text-white">Call Us</p>
-  <p className="mt-2">
-    <a className="text-gray-400 hover:text-yellow-500 underline" href="tel:+919949169108">
-      B. Nithya: +91 9949169108
-    </a>
-  </p>
-  <p className="mt-2">
-    <a className="text-gray-400 hover:text-yellow-500 underline" href="tel:+919014825007">
-      G. Sri Harshith: +91 9014825007
-    </a>
-  </p>
-</div>
-
+                  <p className="text-white">Call Us</p>
+                  <p className="mt-2">
+                    <a 
+                      className="text-gray-400 hover:text-yellow-500 underline" 
+                      href="tel:+919949169108"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Call Banala Nithya"
+                    >
+                      Banala Nithya: +91 9949169108
+                    </a>
+                  </p>
+                  <p className="mt-2">
+                    <a 
+                      className="text-gray-400 hover:text-yellow-500 underline" 
+                      href="tel:+919014825007"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Call Sri Harshith"
+                    >
+                      Sri Harshith: +91 9014825007
+                    </a>
+                  </p>
+                </div>
               </div>
               <div className="flex items-center">
                 <Mail className="h-6 w-6 text-blue-400 mr-4" />
                 <div>
-  <p className="text-white">Email Us</p>
-  <p className="mt-2">
-    <a className="text-gray-400 hover:text-yellow-500 underline" href="mailto:abcclub.icfaitech@ifheindia.org">
-      abcclub.icfaitech@ifheindia.org
-    </a>
-  </p>
-</div>
-
+                  <p className="text-white">Email Us</p>
+                  <p className="mt-2">
+                    <a 
+                      className="text-gray-400 hover:text-yellow-500 underline" 
+                      href="mailto:abcclub.icfaitech@ifheindia.org"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Send us an email"
+                    >
+                      abcclub.icfaitech@ifheindia.org
+                    </a>
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -74,19 +143,28 @@ export default function Contact() {
               <div className="flex space-x-4">
                 <a
                   href="https://www.instagram.com/abc._.club/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-gray-400 hover:text-pink-400 transition-colors"
+                  aria-label="Visit our Instagram"
                 >
                   <Instagram className="h-6 w-6" />
                 </a>
                 <a
                   href="https://www.linkedin.com/in/abc-club-b01830332/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-gray-400 hover:text-blue-900 transition-colors"
+                  aria-label="Visit our LinkedIn"
                 >
                   <Linkedin className="h-6 w-6" />
                 </a>
                 <a
-                  href="#"
+                  href="https://github.com/ABC-Club-ICFAI"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-gray-400 hover:text-white transition-colors"
+                  aria-label="Visit our GitHub"
                 >
                   <Github className="h-6 w-6" />
                 </a>
@@ -103,7 +181,7 @@ export default function Contact() {
             <h2 className="text-2xl font-semibold mb-6 text-white">
               Send us a Message
             </h2>
-            <form className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label
                   htmlFor="name"
@@ -114,6 +192,10 @@ export default function Contact() {
                 <input
                   type="text"
                   id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
                   className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
@@ -127,6 +209,10 @@ export default function Contact() {
                 <input
                   type="email"
                   id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
                   className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
@@ -139,15 +225,36 @@ export default function Contact() {
                 </label>
                 <textarea
                   id="message"
+                  name="message"
                   rows={4}
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  required
                   className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 ></textarea>
               </div>
+
+              {status === 'success' && (
+                <div className="text-green-500 text-center bg-green-500/10 py-2 rounded">
+                  Message sent successfully!
+                </div>
+              )}
+
+              {status === 'error' && (
+                <div className="text-red-500 text-center bg-red-500/10 py-2 rounded">
+                  Failed to send message. Please try again.
+                </div>
+              )}
+
               <button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors duration-200"
+                disabled={status === 'loading'}
+                className={`w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2 ${
+                  status === 'loading' ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
               >
-                Send Message
+                <Mail className="w-5 h-5" />
+                {status === 'loading' ? 'Sending...' : 'Send Message'}
               </button>
             </form>
           </motion.div>

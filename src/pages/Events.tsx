@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, MapPin, Clock, ChevronDown, ChevronUp, Plus, Upload, X, Edit2, Trash2, Bell } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import SaveButton from '../components/SaveButton';
 
 interface Event {
   id: string;
@@ -26,6 +27,7 @@ const EventsEditor = () => {
   const [expandedCards, setExpandedCards] = useState<ExpandedCards>({});
   const [imagePreview, setImagePreview] = useState('');
   const [notificationPermission, setNotificationPermission] = useState('default');
+  const [hasChanges, setHasChanges] = useState(false);
   const { isEditor, toggleEditor } = useAuth();
   const [newEvent, setNewEvent] = useState<Event>({
     title: '',
@@ -45,6 +47,23 @@ const EventsEditor = () => {
       setNotificationPermission(Notification.permission);
     }
   }, []);
+
+  // Load events from localStorage
+  useEffect(() => {
+    const savedEvents = localStorage.getItem('events');
+    if (savedEvents) {
+      setEvents(JSON.parse(savedEvents));
+    }
+  }, []);
+
+  // Track changes
+  useEffect(() => {
+    const savedEvents = localStorage.getItem('events');
+    const currentEvents = JSON.stringify(events);
+    if (savedEvents !== currentEvents && events.length > 0) {
+      setHasChanges(true);
+    }
+  }, [events]);
 
   const parseTime = (timeStr: string) => {
     const [start] = timeStr.split('-').map(t => t.trim());
@@ -248,18 +267,98 @@ const EventsEditor = () => {
     });
   };
 
+  const handleAddEvent = () => {
+    const newEvent: Event = {
+      id: `event_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      title: '',
+      date: '',
+      time: '',
+      location: '',
+      description: '',
+      imageUrl: '',
+      imageFile: null,
+      duration: '',
+      googleFormUrl: ''
+    };
+    setEvents(prev => [...prev, newEvent]);
+    setHasChanges(true);
+  };
+
+  const handleUpdateEvent = (updatedEvent: Event) => {
+    setEvents(prev => 
+      prev.map(event => event.id === updatedEvent.id ? updatedEvent : event)
+    );
+    setHasChanges(true);
+  };
+
+  const handleDeleteEvent = (eventId: string) => {
+    setEvents(prev => prev.filter(event => event.id !== eventId));
+    setHasChanges(true);
+  };
+
+  // Function to compress image
+  const compressImage = async (base64String: string): Promise<string> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.src = base64String;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Calculate new dimensions (max 800px width/height)
+        let width = img.width;
+        let height = img.height;
+        const maxSize = 800;
+        
+        if (width > height && width > maxSize) {
+          height = (height * maxSize) / width;
+          width = maxSize;
+        } else if (height > maxSize) {
+          width = (width * maxSize) / height;
+          height = maxSize;
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', 0.7));
+      };
+    });
+  };
+
+  const handleSaveChanges = async () => {
+    try {
+      // Compress all images before saving
+      const compressedEvents = await Promise.all(
+        events.map(async (event) => ({
+          ...event,
+          imageUrl: event.imageUrl ? await compressImage(event.imageUrl) : event.imageUrl
+        }))
+      );
+
+      const eventsString = JSON.stringify(compressedEvents);
+      if (eventsString.length > 4.5 * 1024 * 1024) {
+        throw new Error('Storage limit reached');
+      }
+
+      localStorage.setItem('events', eventsString);
+      setEvents(compressedEvents);
+      setHasChanges(false);
+      alert('Events saved successfully!');
+    } catch (error) {
+      if (error.message === 'Storage limit reached') {
+        alert('Storage limit reached. Try reducing image sizes or removing unused events.');
+      } else {
+        alert('Failed to save events. Please try again.');
+      }
+      console.error('Save error:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen py-20 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        {isEditor && (
-          <button
-            onClick={toggleEditor}
-            className="fixed top-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg"
-          >
-            {isEditor ? 'Switch to User Mode' : 'Switch to Editor Mode'}
-          </button>
-        )}
-
+      <div className="max-w-7xl mx-auto relative">
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
             Upcoming Events
@@ -536,6 +635,22 @@ const EventsEditor = () => {
             </div>
           ))}
         </div>
+
+        {/* Show event count */}
+        {events.length > 0 && (
+          <div className="mt-8 text-center text-gray-400">
+            Showing {events.length} events
+          </div>
+        )}
+
+        {/* Save button for editors */}
+        {isEditor && (
+          <SaveButton 
+            onSave={handleSaveChanges}
+            disabled={!hasChanges}
+            className={!hasChanges ? 'opacity-50 cursor-not-allowed' : ''}
+          />
+        )}
       </div>
     </div>
   );

@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Brain, Rocket, Users, Calendar } from "lucide-react";
 import EditButton from "../components/EditButton";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
+import { loadGoogleFont } from '../components/Navbar';
 
 export default function Home() {
   const { isEditor } = useAuth();
   const [isEditing, setIsEditing] = React.useState(false);
+
+  useEffect(() => {
+    // Only load Black Han Sans for the tagline
+    loadGoogleFont('Black Han Sans');
+  }, []);
 
   return (
     <div className="min-h-screen">
@@ -34,9 +40,9 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-base sm:text-lg md:text-2xl text-gray-300 mb-6 sm:mb-8 font-[Kantumruy Pro] px-4"
+            className="text-base sm:text-lg md:text-2xl text-gray-300 mb-6 sm:mb-8 font-['Black_Han_Sans'] px-4"
           >
-            Connecting Minds, Creating Solutions, Driving Change
+            Insights through innovation
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
