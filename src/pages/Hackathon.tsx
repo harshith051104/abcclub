@@ -128,7 +128,14 @@ const Hackathon = () => {
                 </div>
                 <div className="flex items-center text-gray-200">
                   <MapPin className="h-5 w-5 mr-2 text-blue-400" />
-                  <span>IcfaiTech Campus</span>
+                  <a 
+                    href="https://maps.google.com/?q=IcfaiTech+Hyderabad"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-blue-400 transition-colors duration-200"
+                  >
+                    IcfaiTech Campus
+                  </a>
                 </div>
               </div>
             </div>
@@ -229,10 +236,16 @@ const Hackathon = () => {
           <div className="flex flex-col items-center gap-4">
             <Link
               to="/hackathon/register"
-              className="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg transition-colors duration-200"
+              className="button-28 inline-block px-6 py-3 text-base font-semibold rounded-xl
+                border-2 border-blue-600 text-blue-600
+                hover:bg-blue-600 hover:text-white
+                transition-all duration-300 ease-in-out
+                min-h-0 min-w-0 w-auto
+                hover:shadow-lg hover:shadow-blue-600/20
+                active:transform active:translate-y-0
+                disabled:pointer-events-none"
             >
-              <span>Register Now</span>
-              <ArrowRight className="ml-2 h-5 w-5" />
+              Register Now
             </Link>
             <p className="text-gray-400">
               Already registered? <Link to="/hackathon/login" className="text-blue-400 hover:text-blue-300">Login here</Link> to view problem statements
@@ -245,13 +258,27 @@ const Hackathon = () => {
           <div className="flex justify-center gap-4 mt-8">
             <Link
               to="/hackathon/problems"
-              className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg transition-colors duration-200"
+              className="button-28 inline-block px-6 py-3 text-base font-semibold rounded-xl
+                border-2 border-purple-600 text-purple-600
+                hover:bg-purple-600 hover:text-white
+                transition-all duration-300 ease-in-out
+                min-h-0 min-w-0 w-auto
+                hover:shadow-lg hover:shadow-purple-600/20
+                active:transform active:translate-y-0
+                disabled:pointer-events-none"
             >
               Manage Problems
             </Link>
             <Link
               to="/hackathon/manage-registrations"
-              className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-colors duration-200"
+              className="button-28 inline-block px-6 py-3 text-base font-semibold rounded-xl
+                border-2 border-green-600 text-green-600
+                hover:bg-green-600 hover:text-white
+                transition-all duration-300 ease-in-out
+                min-h-0 min-w-0 w-auto
+                hover:shadow-lg hover:shadow-green-600/20
+                active:transform active:translate-y-0
+                disabled:pointer-events-none"
             >
               View Registrations
             </Link>

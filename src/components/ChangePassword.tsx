@@ -87,14 +87,28 @@ const ChangePassword = ({ onClose }) => {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors"
+              className="button-28 inline-block px-6 py-2 text-base font-semibold rounded-xl
+                border-2 border-gray-600 text-gray-600
+                hover:bg-gray-600 hover:text-white
+                transition-all duration-300 ease-in-out
+                min-h-0 min-w-0 flex-1
+                hover:shadow-lg hover:shadow-gray-600/20
+                active:transform active:translate-y-0
+                disabled:pointer-events-none"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
+              className="button-28 inline-block px-6 py-2 text-base font-semibold rounded-xl
+                border-2 border-blue-600 text-blue-600
+                hover:bg-blue-600 hover:text-white
+                transition-all duration-300 ease-in-out
+                min-h-0 min-w-0 flex-1
+                hover:shadow-lg hover:shadow-blue-600/20
+                active:transform active:translate-y-0
+                disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Changing...' : 'Change Password'}
             </button>

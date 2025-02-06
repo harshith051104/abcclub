@@ -120,8 +120,8 @@ export default function Recruitment() {
               >
                 <option value="">Select your branch</option>
                 <option value="BTECH">BTECH</option>
-                <option value="BCA">BCA</option>
                 <option value="BSC">BSC</option>
+                <option value="BCA">BCA</option>
               </select>
               {errors.branch && <p className="mt-1 text-sm text-red-400">{errors.branch.message}</p>}
             </div>
@@ -157,10 +157,17 @@ export default function Recruitment() {
               )}
             </div>
 
-            <div>
+            <div className="text-center">
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-500 text-white py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-[1.02] focus:scale-[0.98]"
+                className="button-28 inline-block px-6 py-3 text-base font-semibold rounded-xl
+                  border-2 border-blue-600 text-blue-600
+                  hover:bg-blue-600 hover:text-white
+                  transition-all duration-300 ease-in-out
+                  min-h-0 min-w-0 w-auto mx-auto
+                  hover:shadow-lg hover:shadow-blue-600/20
+                  active:transform active:translate-y-0
+                  disabled:pointer-events-none"
               >
                 Submit Application
               </button>

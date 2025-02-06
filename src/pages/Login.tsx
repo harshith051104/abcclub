@@ -300,23 +300,34 @@ const Login = () => {
             </div>
 
             <div className="flex items-center justify-between">
-              <div className="text-sm">
-                <button
-                  type="button"
-                  onClick={() => setIsForgotPassword(true)}
-                  className="text-blue-500 hover:text-blue-400"
-                >
-                  Forgot your password?
-                </button>
-              </div>
+              {!isSignUp && (
+                <div className="text-sm">
+                  <button
+                    type="button"
+                    onClick={() => setIsForgotPassword(true)}
+                    className="text-blue-500 hover:text-blue-400"
+                  >
+                    Forgot your password?
+                  </button>
+                </div>
+              )}
             </div>
 
-            <button
-              type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition-colors duration-200"
-            >
-              {isSignUp ? 'Create Account' : 'Sign in'}
-            </button>
+            <div className="text-center">
+              <button
+                type="submit"
+                className="button-28 inline-block px-6 py-3 text-base font-semibold rounded-xl
+                  border-2 border-blue-600 text-blue-600
+                  hover:bg-blue-600 hover:text-white
+                  transition-all duration-300 ease-in-out
+                  min-h-0 min-w-0 w-auto mx-auto
+                  hover:shadow-lg hover:shadow-blue-600/20
+                  active:transform active:translate-y-0
+                  disabled:pointer-events-none"
+              >
+                {isSignUp ? 'Create Account' : 'Sign in'}
+              </button>
+            </div>
           </form>
         </div>
       </div>

@@ -445,10 +445,17 @@ export default function Gallery() {
           {isEditor && (
             <button
               onClick={() => setIsManagementView(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors inline-flex items-center"
+              className="button-28 inline-flex items-center justify-center px-6 py-2 text-base font-semibold rounded-xl
+                border-2 border-blue-600 text-blue-600
+                hover:bg-blue-600 hover:text-white
+                transition-all duration-300 ease-in-out
+                min-h-0 min-w-0 w-auto
+                hover:shadow-lg hover:shadow-blue-600/20
+                active:transform active:translate-y-0
+                disabled:pointer-events-none"
             >
               <Plus className="w-5 h-5 mr-2" />
-              Manage Gallery
+              Add Album
             </button>
           )}
         </motion.div>

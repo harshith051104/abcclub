@@ -4,6 +4,7 @@ import { Brain, Rocket, Users, Calendar } from "lucide-react";
 import EditButton from "../components/EditButton";
 import { useAuth } from "../contexts/AuthContext";
 import { loadGoogleFont } from '../components/Navbar';
+import { Link } from "react-router-dom";
 
 export default function Home() {
   const { isEditor } = useAuth();
@@ -44,17 +45,25 @@ export default function Home() {
           >
             Insights through innovation
           </motion.p>
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            <a
-              href="/recruitment"
-              className="inline-block bg-amber-500 hover:bg-amber-600 text-black px-6 sm:px-8 py-2 sm:py-3 rounded-lg text-base sm:text-lg font-medium transition-colors duration-200"
+            <Link
+              to="/recruitment"
+              className="button-28 inline-block px-8 py-3 text-base sm:text-lg font-semibold rounded-xl
+                border-2 border-amber-500 text-amber-500
+                hover:bg-amber-500 hover:text-white
+                transition-all duration-300 ease-in-out
+                min-h-0 min-w-0 w-auto
+                hover:shadow-lg hover:shadow-amber-500/20
+                active:transform active:translate-y-0
+                disabled:pointer-events-none"
             >
               Join Us
-            </a>
+            </Link>
           </motion.div>
         </div>
       </section>

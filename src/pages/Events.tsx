@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Calendar, MapPin, Clock, ChevronDown, ChevronUp, Plus, Upload, X, Edit2, Trash2, Bell } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import SaveButton from '../components/SaveButton';
+import { Link } from 'react-router-dom';
 
 interface Event {
   id: string;
@@ -369,9 +370,15 @@ const EventsEditor = () => {
           {isEditor && !isEditing && (
             <button
               onClick={() => setIsEditing(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 mx-auto"
+              className="button-28 inline-block px-6 py-3 text-base font-semibold rounded-xl
+                border-2 border-blue-600 text-blue-600
+                hover:bg-blue-600 hover:text-white
+                transition-all duration-300 ease-in-out
+                min-h-0 min-w-0 w-auto
+                hover:shadow-lg hover:shadow-blue-600/20
+                active:transform active:translate-y-0
+                disabled:pointer-events-none"
             >
-              <Plus className="h-5 w-5" />
               Add New Event
             </button>
           )}
@@ -651,6 +658,105 @@ const EventsEditor = () => {
             className={!hasChanges ? 'opacity-50 cursor-not-allowed' : ''}
           />
         )}
+
+        <div className="max-w-3xl mx-auto">
+          <div className="space-y-6">
+            {events.map((event) => (
+              <div
+                key={event.id}
+                className="bg-gray-900/50 backdrop-blur-lg rounded-xl overflow-hidden border border-blue-900/50 hover:border-blue-500/50 transition-all duration-300"
+              >
+                <div className="relative">
+                  <img
+                    src={event.imageUrl}
+                    alt={event.title}
+                    className="w-full h-48 object-cover"
+                  />
+                  {isEditor && (
+                    <div className="absolute top-2 right-2 flex gap-2">
+                      <button
+                        onClick={() => handleEdit(event)}
+                        className="p-2 bg-blue-600 rounded-lg text-white hover:bg-blue-700 transition-colors"
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(event.id)}
+                        className="p-2 bg-red-600 rounded-lg text-white hover:bg-red-700 transition-colors"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+                
+                <div className="p-6">
+                  <h3 className="text-2xl font-semibold mb-4 text-white">
+                    {event.title}
+                  </h3>
+                  <div className="space-y-2 mb-4">
+                    <div className="flex items-center text-gray-400">
+                      <Calendar className="h-5 w-5 mr-2" />
+                      <span>{new Date(event.date).toLocaleDateString()}</span>
+                    </div>
+                    <div className="flex items-center text-gray-400">
+                      <Clock className="h-5 w-5 mr-2" />
+                      <span>{event.time}</span>
+                    </div>
+                    <div className="flex items-center text-gray-400">
+                      <MapPin className="h-5 w-5 mr-2" />
+                      <span>{event.location}</span>
+                    </div>
+                  </div>
+                  
+                  <button
+                    onClick={() => toggleDescription(event.id)}
+                    className="flex items-center text-gray-400 hover:text-gray-300 mb-4 w-full justify-between"
+                  >
+                    <span>Description</span>
+                    {expandedCards[event.id] ? (
+                      <ChevronUp className="h-5 w-5" />
+                    ) : (
+                      <ChevronDown className="h-5 w-5" />
+                    )}
+                  </button>
+                  
+                  {expandedCards[event.id] && (
+                    <p className="text-gray-400 mb-6">{event.description}</p>
+                  )}
+                  
+                  <div className="flex flex-col gap-4">
+                    <div className="flex gap-4">
+                      <a
+                        href={createGoogleCalendarUrl(event)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 text-center flex items-center justify-center gap-2"
+                      >
+                        <Calendar className="h-5 w-5" />
+                        Add to Calendar
+                      </a>
+                      <button
+                        onClick={() => setDeviceReminder(event)}
+                        className="flex-1 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
+                      >
+                        <Bell className="h-5 w-5" />
+                        Set Reminder
+                      </button>
+                    </div>
+                    
+                    <button 
+                      onClick={() => handleParticipate(event)}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors duration-200"
+                    >
+                      Register Now
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

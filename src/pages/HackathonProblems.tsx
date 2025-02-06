@@ -8,6 +8,8 @@ interface Problem {
   title: string;
   description: string;
   requirements: string[];
+  category: 'software' | 'hardware';
+  theme: 'deep learning' | 'machine learning' | 'data visualization' | 'artificial intelligence' | 'natural language processing';
 }
 
 interface ExpandedProblems {
@@ -26,7 +28,9 @@ export default function HackathonProblems() {
         "Include appointment scheduling system",
         "Implement medication reminder feature",
         "Provide basic medical information"
-      ]
+      ],
+      category: 'software',
+      theme: 'natural language processing'
     }
   ]);
 
@@ -36,6 +40,9 @@ export default function HackathonProblems() {
   const [isEditing, setIsEditing] = useState(false);
   const [editingProblem, setEditingProblem] = useState<Problem | null>(null);
   const [hasChanges, setHasChanges] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<'all' | 'software' | 'hardware'>('all');
+  const [selectedTheme, setSelectedTheme] = useState<'all' | 'deep learning' | 'machine learning' | 'data visualization' | 'artificial intelligence' | 'natural language processing'>('all');
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Load problems from localStorage on mount
   useEffect(() => {
@@ -80,7 +87,9 @@ export default function HackathonProblems() {
       id: problems.length + 1,
       title: '',
       description: '',
-      requirements: ['']
+      requirements: [''],
+      category: 'software',
+      theme: 'artificial intelligence'
     };
     setEditingProblem(newProblem);
     setIsEditing(true);
@@ -139,6 +148,13 @@ export default function HackathonProblems() {
     }
   };
 
+  const filteredProblems = problems.filter(problem => 
+    (selectedCategory === 'all' || problem.category === selectedCategory) &&
+    (selectedTheme === 'all' || problem.theme === selectedTheme) &&
+    (problem.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+     problem.description.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
   if (showThankYou) {
     return (
       <div className="min-h-screen py-20 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
@@ -177,6 +193,45 @@ export default function HackathonProblems() {
                 className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white"
                 required
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-1">
+                Category
+              </label>
+              <select
+                value={editingProblem.category}
+                onChange={(e) => setEditingProblem({ 
+                  ...editingProblem, 
+                  category: e.target.value as 'software' | 'hardware' 
+                })}
+                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white"
+                required
+              >
+                <option value="software">Software</option>
+                <option value="hardware">Hardware</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-1">
+                Theme
+              </label>
+              <select
+                value={editingProblem.theme}
+                onChange={(e) => setEditingProblem({ 
+                  ...editingProblem, 
+                  theme: e.target.value as Problem['theme']
+                })}
+                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white"
+                required
+              >
+                <option value="deep learning">Deep Learning</option>
+                <option value="machine learning">Machine Learning</option>
+                <option value="data visualization">Data Visualization</option>
+                <option value="artificial intelligence">Artificial Intelligence</option>
+                <option value="natural language processing">Natural Language Processing</option>
+              </select>
             </div>
 
             <div>
@@ -250,100 +305,189 @@ export default function HackathonProblems() {
   return (
     <div className="min-h-screen py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
-            Problem Statements
-          </h2>
-          {isEditor && (
-            <button
-              onClick={handleAddProblem}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+        <div className="flex flex-col gap-4 mb-8">
+          <div className="flex justify-between items-center">
+            <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
+              Problem Statements
+            </h2>
+            {isEditor && (
+              <button
+                onClick={handleAddProblem}
+                className="button-28 inline-flex items-center justify-center px-6 py-2 text-base font-semibold rounded-xl
+                  border-2 border-blue-600 text-blue-600
+                  hover:bg-blue-600 hover:text-white
+                  transition-all duration-300 ease-in-out
+                  min-h-0 min-w-0 w-auto
+                  hover:shadow-lg hover:shadow-blue-600/20
+                  active:transform active:translate-y-0
+                  disabled:pointer-events-none"
+              >
+                <Plus className="w-5 h-5 mr-2" />
+                Add Problem
+              </button>
+            )}
+          </div>
+          
+          <div className="flex flex-wrap items-center gap-2">
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value as 'all' | 'software' | 'hardware')}
+              className="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm"
             >
-              <Plus className="w-5 h-5" />
-              Add Problem
-            </button>
-          )}
+              <option value="all">All Categories</option>
+              <option value="software">Software</option>
+              <option value="hardware">Hardware</option>
+            </select>
+            <select
+              value={selectedTheme}
+              onChange={(e) => setSelectedTheme(e.target.value as typeof selectedTheme)}
+              className="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm"
+            >
+              <option value="all">All Themes</option>
+              <option value="deep learning">Deep Learning</option>
+              <option value="machine learning">Machine Learning</option>
+              <option value="data visualization">Data Visualization</option>
+              <option value="artificial intelligence">Artificial Intelligence</option>
+              <option value="natural language processing">Natural Language Processing</option>
+            </select>
+            
+            <div className="relative ml-auto">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search..."
+                className="w-48 bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white text-sm pl-9"
+              />
+              <svg
+                className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </div>
+          </div>
         </div>
 
-        <div className="space-y-4 mb-8">
-          {problems.map((problem) => (
-            <div
-              key={problem.id}
-              className="bg-gray-900/50 border border-gray-800 rounded-lg overflow-hidden"
-            >
+        {/* Add a "no results" message when no problems match the filters */}
+        {filteredProblems.length === 0 ? (
+          <div className="text-center py-8">
+            <p className="text-gray-400">
+              No problem statements match your search criteria.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4 mb-8">
+            {filteredProblems.map((problem) => (
               <div
-                className="p-4 flex items-center justify-between cursor-pointer"
-                onClick={() => toggleProblem(problem.id)}
+                key={problem.id}
+                className="bg-gray-900/50 border border-gray-800 rounded-lg overflow-hidden"
               >
-                <div className="flex items-center space-x-4">
-                  {!isEditor && (
-                    <input
-                      type="radio"
-                      name="problem"
-                      value={problem.id}
-                      onChange={() => setSelectedProblem(problem.id)}
-                      className="w-4 h-4 text-blue-600"
-                    />
-                  )}
-                  <h3 className="text-lg font-medium text-white">
-                    {problem.title}
-                  </h3>
-                </div>
-                <div className="flex items-center gap-2">
-                  {isEditor && (
-                    <>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEditProblem(problem);
-                        }}
-                        className="p-2 bg-blue-600 rounded-lg text-white hover:bg-blue-700"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteProblem(problem.id);
-                        }}
-                        className="p-2 bg-red-600 rounded-lg text-white hover:bg-red-700"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </>
-                  )}
-                  {expandedProblems[problem.id] ? (
-                    <ChevronUp className="w-5 h-5 text-gray-400" />
-                  ) : (
-                    <ChevronDown className="w-5 h-5 text-gray-400" />
-                  )}
-                </div>
-              </div>
-
-              {expandedProblems[problem.id] && (
-                <div className="px-4 pb-4">
-                  <p className="text-gray-300 mb-4">{problem.description}</p>
-                  <div className="space-y-2">
-                    <h4 className="text-sm font-medium text-gray-400">Requirements:</h4>
-                    <ul className="list-disc list-inside text-gray-300 space-y-1">
-                      {problem.requirements.map((req, index) => (
-                        <li key={index}>{req}</li>
-                      ))}
-                    </ul>
+                <div
+                  className="p-4 flex items-center justify-between cursor-pointer"
+                  onClick={() => toggleProblem(problem.id)}
+                >
+                  <div className="flex items-center space-x-4">
+                    {!isEditor && (
+                      <input
+                        type="radio"
+                        name="problem"
+                        value={problem.id}
+                        onChange={() => setSelectedProblem(problem.id)}
+                        className="w-4 h-4 text-blue-600"
+                      />
+                    )}
+                    <div className="flex flex-col">
+                      <h3 className="text-lg font-medium text-white">
+                        {problem.title}
+                      </h3>
+                      <div className="flex gap-2">
+                        <span className={`text-sm px-2 py-1 rounded-full w-fit ${
+                          problem.category === 'software' 
+                            ? 'bg-blue-600/20 text-blue-400' 
+                            : 'bg-green-600/20 text-green-400'
+                        }`}>
+                          {problem.category.charAt(0).toUpperCase() + problem.category.slice(1)}
+                        </span>
+                        <span className="text-sm px-2 py-1 rounded-full w-fit bg-purple-600/20 text-purple-400">
+                          {problem.theme.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {isEditor && (
+                      <>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditProblem(problem);
+                          }}
+                          className="p-2 bg-blue-600 rounded-lg text-white hover:bg-blue-700"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteProblem(problem.id);
+                          }}
+                          className="p-2 bg-red-600 rounded-lg text-white hover:bg-red-700"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </>
+                    )}
+                    {expandedProblems[problem.id] ? (
+                      <ChevronUp className="w-5 h-5 text-gray-400" />
+                    ) : (
+                      <ChevronDown className="w-5 h-5 text-gray-400" />
+                    )}
                   </div>
                 </div>
-              )}
-            </div>
-          ))}
-        </div>
+
+                {expandedProblems[problem.id] && (
+                  <div className="px-4 pb-4">
+                    <p className="text-gray-300 mb-4">{problem.description}</p>
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-medium text-gray-400">Requirements:</h4>
+                      <ul className="list-disc list-inside text-gray-300 space-y-1">
+                        {problem.requirements.map((req, index) => (
+                          <li key={index}>{req}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
 
         {!isEditor && (
-          <button
-            onClick={handleSubmit}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition-colors duration-200"
-          >
-            Submit Selection
-          </button>
+          <div className="text-center">
+            <button
+              onClick={handleSubmit}
+              className="button-28 inline-block px-6 py-3 text-base font-semibold rounded-xl
+                border-2 border-blue-600 text-blue-600
+                hover:bg-blue-600 hover:text-white
+                transition-all duration-300 ease-in-out
+                min-h-0 min-w-0 w-auto mx-auto
+                hover:shadow-lg hover:shadow-blue-600/20
+                active:transform active:translate-y-0
+                disabled:pointer-events-none"
+            >
+              Submit Selection
+            </button>
+          </div>
         )}
       </div>
 

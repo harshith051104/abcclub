@@ -246,16 +246,23 @@ export default function Contact() {
                 </div>
               )}
 
-              <button
-                type="submit"
-                disabled={status === 'loading'}
-                className={`w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2 ${
-                  status === 'loading' ? 'opacity-50 cursor-not-allowed' : ''
-                }`}
-              >
-                <Mail className="w-5 h-5" />
-                {status === 'loading' ? 'Sending...' : 'Send Message'}
-              </button>
+              <div className="text-center">
+                <button
+                  type="submit"
+                  disabled={status === 'loading'}
+                  className="button-28 inline-block px-6 py-3 text-base font-semibold rounded-xl
+                    border-2 border-blue-600 text-blue-600
+                    hover:bg-blue-600 hover:text-white
+                    transition-all duration-300 ease-in-out
+                    min-h-0 min-w-0 w-auto mx-auto
+                    hover:shadow-lg hover:shadow-blue-600/20
+                    active:transform active:translate-y-0
+                    disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Mail className="w-5 h-5 inline-block mr-2" />
+                  {status === 'loading' ? 'Sending...' : 'Send Message'}
+                </button>
+              </div>
             </form>
           </motion.div>
         </div>
