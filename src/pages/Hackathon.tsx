@@ -1,15 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Calendar, MapPin, Clock, Trophy, Users, Code, ArrowRight, Lightbulb, Target, Upload, X, Edit2, Trash2 } from 'lucide-react';
+import { Calendar, MapPin, Clock, Trophy, Lightbulb, Target, Upload, X, Edit2, Trash2 } from 'lucide-react';
 import SaveButton from '../components/SaveButton';
 import { motion } from 'framer-motion';
+import { api } from '../utils/api';
+import { handleApiError } from '../types/errors';
 
-const Hackathon = () => {
+interface HackathonState {
+  posterImage: string;
+  isEditingPoster: boolean;
+  hasChanges: boolean;
+}
+
+interface TeamData {
+  teamName: string;
+  members: string[];
+  problemId: string;
+}
+
+const hackathonApi = {
+  register: (teamData: TeamData) => 
+    api.post('/hackathon/register', teamData),
+  
+  getProblems: () => 
+    api.get('/hackathon/problems'),
+  
+  submitSolution: (teamId: string, problemId: string, solution: string) =>
+    api.post('/hackathon/submit', { teamId, problemId, solution })
+};
+
+const Hackathon: React.FC = () => {
   const { isEditor } = useAuth();
-  const [posterImage, setPosterImage] = useState('/hackathon-poster.jpg');
-  const [isEditingPoster, setIsEditingPoster] = useState(false);
-  const [hasChanges, setHasChanges] = useState(false);
+  const [posterImage, setPosterImage] = useState<string>('/hackathon-poster.jpg');
+  const [isEditingPoster, setIsEditingPoster] = useState<boolean>(false);
+  const [hasChanges, setHasChanges] = useState<boolean>(false);
 
   // Load poster from localStorage on mount
   useEffect(() => {
@@ -40,13 +65,14 @@ const Hackathon = () => {
     }
   };
 
-  const handleSaveChanges = () => {
+  const handleSaveChanges = async () => {
     try {
       localStorage.setItem('hackathonPoster', posterImage);
       setHasChanges(false);
       alert('Poster saved successfully!');
     } catch (error) {
-      alert('Failed to save poster. Please try again.');
+      const apiError = handleApiError(error);
+      alert(apiError.message);
     }
   };
 
@@ -56,6 +82,16 @@ const Hackathon = () => {
       setHasChanges(true);
     }
   }, [posterImage]);
+
+  const handleRegistration = async (teamData: TeamData) => {
+    try {
+      await hackathonApi.register(teamData);
+      alert('Team registered successfully!');
+    } catch (error) {
+      const apiError = handleApiError(error);
+      alert(apiError.message);
+    }
+  };
 
   return (
     <div className="min-h-screen py-20 px-4 sm:px-6 lg:px-8">

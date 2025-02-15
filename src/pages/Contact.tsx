@@ -122,12 +122,11 @@ export default function Contact() {
                 <div>
                   <p className="text-white">Email Us</p>
                   <p className="mt-2">
-                    <a 
-                      className="text-gray-400 hover:text-yellow-500 underline" 
-                      href="mailto:abcclub.icfaitech@ifheindia.org"
+                    <a
+                      className="text-gray-400 hover:text-yellow-500 underline"
+                      href="mailto:abcclub.icfaitech@ifheindia.org?subject=Contact%20ABC%20Club"
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label="Send us an email"
                     >
                       abcclub.icfaitech@ifheindia.org
                     </a>

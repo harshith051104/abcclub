@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
+const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 
@@ -26,16 +27,17 @@ exports.signup = async (req, res) => {
     const { name, email, password } = req.body;
 
     // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = await req.app.locals.db.users.models.User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists' });
     }
 
     // Create new user
-    const user = await User.create({
+    const user = await req.app.locals.db.users.models.User.create({
       name,
       email,
-      password
+      password: await bcrypt.hash(password, 12),
+      role: 'user'
     });
 
     // Generate token
@@ -55,6 +57,7 @@ exports.signup = async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('Signup error:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
@@ -63,14 +66,33 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // Admin login
+    if (email === 'abcclub.icfaitech@ifheindia.org' && password === 'admin123') {
+      const token = jwt.sign(
+        { id: 'admin', role: 'admin' },
+        process.env.JWT_SECRET,
+        { expiresIn: '24h' }
+      );
+
+      return res.json({
+        token,
+        user: {
+          id: 'admin',
+          name: 'ABC Club',
+          email: email,
+          role: 'admin'
+        }
+      });
+    }
+
     // Find user
-    const user = await User.findOne({ email });
+    const user = await req.app.locals.db.users.models.User.findOne({ email });
     if (!user) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
     // Check password
-    const isMatch = await user.comparePassword(password);
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
@@ -92,6 +114,7 @@ exports.login = async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('Login error:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
@@ -107,7 +130,7 @@ exports.forgotPassword = async (req, res) => {
       });
     }
 
-    const user = await User.findOne({ email });
+    const user = await req.app.locals.db.users.models.User.findOne({ email });
 
     if (!user) {
       return res.status(404).json({ 
@@ -171,7 +194,7 @@ exports.forgotPassword = async (req, res) => {
 exports.resetPassword = async (req, res) => {
   try {
     const { token, newPassword } = req.body;
-    const user = await User.findOne({
+    const user = await req.app.locals.db.users.models.User.findOne({
       resetToken: token,
       resetTokenExpiry: { $gt: Date.now() }
     });
@@ -181,7 +204,7 @@ exports.resetPassword = async (req, res) => {
     }
 
     // Update password and clear reset token
-    user.password = newPassword;
+    user.password = await bcrypt.hash(newPassword, 12);
     user.resetToken = undefined;
     user.resetTokenExpiry = undefined;
     await user.save();

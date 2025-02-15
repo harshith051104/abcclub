@@ -1,25 +1,22 @@
 const jwt = require('jsonwebtoken');
 
-exports.protect = async (req, res, next) => {
+module.exports = async (req, res, next) => {
   try {
-    const token = req.headers.authorization?.split(' ')[1];
+    // Get token from header
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+
     if (!token) {
-      return res.status(401).json({ message: 'Not authorized' });
+      return res.status(401).json({ message: 'No token, authorization denied' });
     }
 
+    // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    // Add user/team info to request
     req.user = decoded;
+    
     next();
-  } catch (error) {
-    res.status(401).json({ message: 'Not authorized' });
+  } catch (err) {
+    res.status(401).json({ message: 'Token is not valid' });
   }
 };
-
-exports.restrictTo = (...roles) => {
-  return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
-      return res.status(403).json({ message: 'Not authorized' });
-    }
-    next();
-  };
-}; 

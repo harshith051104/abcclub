@@ -1,17 +1,46 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useForm } from 'react-hook-form';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { api } from '../utils/api';
+import { handleApiError } from '../types/errors';
+
+interface IFormInputs {
+  name: string;
+  enrollmentNumber: string;
+  ifheMail: string;
+  contactNumber: string;
+  academicYear: string;
+  branch: string;
+  experience?: string;
+  preferredDomain: string;
+}
+
+const recruitmentApi = {
+  apply: (formData: IFormInputs) => 
+    api.post('/recruitment/apply', formData)
+};
 
 export default function Recruitment() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm<IFormInputs>();
 
-  const onSubmit = (data) => {
-    console.log(data);
-    // Handle form submission
+  const onSubmit: SubmitHandler<IFormInputs> = async (data) => {
+    try {
+      await recruitmentApi.apply(data);
+      alert('Application submitted successfully!');
+    } catch (error) {
+      const apiError = handleApiError(error);
+      if (apiError.status === 409) {
+        alert('You have already submitted an application');
+      } else if (apiError.status === 400) {
+        alert('Please check your form data and try again');
+      } else {
+        alert(apiError.message);
+      }
+    }
   };
 
   return (
