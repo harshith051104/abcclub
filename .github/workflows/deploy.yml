@@ -26,7 +26,6 @@ jobs:
           FIREBASE_SERVICE_ACCOUNT_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
         run: |
           echo "$FIREBASE_SERVICE_ACCOUNT_KEY" > firebase-key.json
-          firebase auth:import firebase-key.json
           export GOOGLE_APPLICATION_CREDENTIALS=firebase-key.json
 
       - name: Deploy to Firebase
